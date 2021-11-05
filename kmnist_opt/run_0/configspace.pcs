@@ -1,0 +1,2 @@
+batch_size integer [32, 1024] [512]log
+learning_rate real [0.0001, 1.0] [0.01]log

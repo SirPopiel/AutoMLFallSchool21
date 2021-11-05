@@ -1,0 +1,4 @@
+from surrogate_model.base_model import BaseModel
+from surrogate_model.dummy_model import DummyModel
+from surrogate_model.gaussian_process import GaussianProcess
+from surrogate_model.random_forest import RFR
