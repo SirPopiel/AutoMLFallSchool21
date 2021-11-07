@@ -45,6 +45,10 @@ class LeNet_Evaluator():
         """
         A wrapper for optimizing the hyperpameters of a neural network on the kmnist dataset
         Parameters:
+            dataset_path: str
+                the path where the dataset is stored
+            device: torch.device
+                where the model needs to be trained.
         """
         os.makedirs(dataset_path, exist_ok=True)
         transform = [torchvision.transforms.ToTensor(),
@@ -58,12 +62,25 @@ class LeNet_Evaluator():
         self.device = device
 
     def train_and_eval(self,
-                       batch_size: float,
+                       batch_size: int,
                        learning_rate: float,
                        train_epoch: int = 10,
                        do_test_inference: bool = False):
         """
         train a lenet with the given hyperparameters and return the validation accuracy
+        Parameters:
+            batch_size: int
+                batch size to train a neural network
+            learning_rate: float
+                learning rate of the optimizer. In this task, the optimizer is a SGD model
+            train_epoch: int
+                number of epochs that the network is trained
+            do_test_inference: bool
+                whether we want to perform a further test inference, this will give you an additional information about
+                the generalization ability of your hyperparameters
+        Return:
+            validation_accuracy: float
+                accuracy of the trained network on the validation dataset (score of the hyperparameter configuration).
         """
         # Define the data loaders
         train_loader = DataLoader(self.train_set, batch_size=batch_size, shuffle=True)
@@ -130,6 +147,21 @@ class LeNet_Evaluator():
         return -score_val.avg
 
     def eval_config(self, cfg: Configuration, budget: float = 1.0, maximal_epoch: int = 10):
+        """
+        evaluate a hyperpameter configuration and return the validation accuracy for that hyperparameter configuration
+        Parameters:
+            cfg: Configuration
+                the configuration to be evaluated. In this task, it contains two hyperparmeters: batch_size and
+                learning_rate
+            budget: float
+                the amount of budgets assigned to the configuration. In this task, it controls the number of epochs that
+                a neural network is trained. The higher it is, the longer the network will be trained.
+            maximal_epoch: int
+                maximal number of epochs that a neural network is trained. it represents the highest budgets.
+        Return:
+            validation_accuracy: float
+                accuracy of the trained network on the validation dataset.
+        """
         if budget == 0.:
             train_epoch = maximal_epoch
         else:
